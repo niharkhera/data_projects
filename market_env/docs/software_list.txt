@@ -1,0 +1,199 @@
+SYSTEM INFORMATION
+-----------------------------
+Current window configuration Window 7 professional 
+copyright 2009 
+
+System 
+Processor i53230M  CPU @2.6ghz 
+installed ram 6.00 GB 
+system type 64-bit operating system 
+------------------------------------------
+$ python -V
+Python 3.6.8
+
+$ java -version
+java version "1.8.0_102"
+Java(TM) SE Runtime Environment (build 1.8.0_102-b35)
+Java HotSpot(TM) 64-Bit Server VM (build 25.102-b35, mixed mode)
+(market_env)
+
+$ spark-submit --version
+version 3.2.4
+Using Scala version 2.12.15, Java HotSpot(TM) 64-Bit Server VM, 1.8.0_102
+
+$ pip show pyspark
+Name: pyspark
+Version: 3.2.4
+Summary: Apache Spark Python API
+
+$ git --version
+git version 2.35.2.windows.1
+------------------------------------------
+
+$ pip list
+Package                Version
+---------------------- -----------
+alembic                1.7.7
+altair                 4.1.0
+apache-airflow         1.10.15
+apispec                1.3.3
+argcomplete            1.12.3
+argon2-cffi            21.3.0
+argon2-cffi-bindings   21.2.0
+async-generator        1.10
+attrs                  20.3.0
+Babel                  2.11.0
+backcall               0.2.0
+bleach                 4.1.0
+blinker                1.5
+cached-property        1.5.2
+cachetools             4.2.4
+cattrs                 1.0.0
+certifi                2024.8.30
+cffi                   1.15.1
+chardet                3.0.4
+click                  7.1.2
+colorama               0.4.5
+colorlog               4.0.2
+comm                   0.1.4
+commonmark             0.9.1
+configparser           3.5.3
+croniter               0.3.37
+cryptography           40.0.2
+dataclasses            0.8
+decorator              5.1.1
+defusedxml             0.7.1
+dill                   0.3.4
+dnspython              2.2.1
+docutils               0.18.1
+email-validator        1.3.1
+entrypoints            0.4
+et-xmlfile             1.1.0
+findspark              2.0.1
+Flask                  1.1.4
+Flask-Admin            1.5.4
+Flask-AppBuilder       2.3.4
+Flask-Babel            1.0.0
+Flask-Caching          1.3.3
+Flask-JWT-Extended     3.25.1
+Flask-Login            0.4.1
+Flask-OpenID           1.3.1
+Flask-SQLAlchemy       2.5.1
+flask-swagger          0.2.14
+Flask-WTF              0.14.3
+funcsigs               1.0.2
+future                 0.18.3
+gitdb                  4.0.9
+GitPython              3.1.18
+graphviz               0.19.1
+greenlet               2.0.2
+gunicorn               20.1.0
+idna                   2.10
+importlib-metadata     2.1.3
+importlib-resources    1.5.0
+ipykernel              5.5.6
+ipython                7.16.3
+ipython-genutils       0.2.0
+ipywidgets             7.8.5
+iso8601                1.1.0
+itsdangerous           1.1.0
+jedi                   0.17.2
+Jinja2                 2.11.3
+json-merge-patch       0.2
+jsonschema             3.2.0
+jupyter-client         7.1.2
+jupyter-core           4.9.2
+jupyterlab-pygments    0.1.2
+jupyterlab_widgets     1.1.11
+lazy-object-proxy      1.4.3
+lockfile               0.12.2
+Mako                   1.1.6
+Markdown               2.6.11
+MarkupSafe             2.0.1
+marshmallow            2.21.0
+marshmallow-enum       1.5.1
+marshmallow-sqlalchemy 0.23.1
+mistune                0.8.4
+natsort                8.2.0
+nbclient               0.5.9
+nbconvert              6.0.7
+nbformat               5.1.3
+nest-asyncio           1.6.0
+notebook               6.4.10
+numpy                  1.19.5
+packaging              21.3
+pandas                 1.1.5
+pandocfilters          1.5.1
+parso                  0.7.1
+pendulum               1.4.4
+pep562                 1.1
+pickleshare            0.7.5
+Pillow                 8.4.0
+pip                    21.3.1
+plotly                 5.18.0
+prison                 0.2.1
+prometheus-client      0.17.1
+prompt-toolkit         3.0.36
+protobuf               3.19.6
+psutil                 5.9.8
+py4j                   0.10.9.5
+pyarrow                6.0.1
+pycparser              2.21
+pydeck                 0.6.2
+Pygments               2.14.0
+PyJWT                  1.7.1
+Pympler                1.1
+pyparsing              3.1.4
+pyrsistent             0.18.0
+pyspark                3.2.4
+python-daemon          2.3.2
+python-dateutil        2.9.0.post0
+python-dotenv          0.20.0
+python-nvd3            0.15.0
+python-slugify         4.0.1
+python3-openid         3.2.0
+pytz                   2024.2
+pytzdata               2020.1
+pywin32                305
+pywinpty               1.1.6
+PyYAML                 6.0.1
+pyzmq                  25.1.2
+requests               2.23.0
+rich                   12.6.0
+semver                 2.13.0
+Send2Trash             1.8.3
+setproctitle           1.2.3
+setuptools             40.6.2
+six                    1.17.0
+smmap                  5.0.0
+SQLAlchemy             1.3.24
+SQLAlchemy-JSONField   0.9.0
+SQLAlchemy-Utils       0.41.1
+streamlit              1.10.0
+tabulate               0.8.10
+tenacity               8.2.2
+terminado              0.12.1
+testpath               0.6.0
+text-unidecode         1.3
+thrift                 0.21.0
+toml                   0.10.2
+toolz                  0.12.0
+tornado                6.1
+traitlets              4.3.3
+typing                 3.7.4.3
+typing_extensions      4.1.1
+tzlocal                1.5.1
+unicodecsv             0.14.1
+urllib3                1.25.11
+validators             0.20.0
+watchdog               2.3.1
+wcwidth                0.2.13
+webencodings           0.5.1
+websocket-client       1.3.1
+websockets             9.1
+Werkzeug               0.16.1
+widgetsnbextension     3.6.10
+WTForms                3.0.0
+zipp                   3.6.0
+zope.deprecation       4.4.0
+------------------------------------------

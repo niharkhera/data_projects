@@ -1,0 +1,20 @@
+Project Stucture
+F:/stock_index_project/market_env(virual environment)
+-->market_env---->data---->csv---->index_composition.csv
+-->market_env---->data---->csv---->index_performance.csv
+-->market_env---->db---->stock_data.db
+-->market_env---->docs---->requirements.txt(the packages I installed, on top of my head)
+-->market_env---->docs---->software.txt(the packages I installed)
+-->market_env----include
+-->market_env----Lib
+-->market_env----Notebooks 
+-->market_env----scripts 
+-->market_env----share 
+-->market_env----src----export.py
+-->market_env----src----fetch_data.py
+-->market_env----src----index_construction.py
+-->market_env----src----save_db.py
+-->market_env----src----stock_index_dashboard.py
+-->market_env----src----export.py
+-->market_env---->----src----.env(Contains API_key for polygon)
+-->market_env----tests
