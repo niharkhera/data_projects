@@ -1,4 +1,4 @@
 # Stock_Index_Project. 
-Exploring data end to end solutions
+Creating data end to end solutions for finance domain
 
 Start reading readMe.txt file. 
