@@ -13,9 +13,9 @@ A Python-based dashboard application for constructing, tracking, and visualizing
 
 ## Prerequisites
 
-- Python 3.8+
-- SQLite3
-- Polygon.io API key (for market data)
+- Python 3.6.8
+- IDE
+- git bash (git version 2.35.2.windows.1)
 
 ## Installation
 
@@ -27,8 +27,8 @@ cd stock-index-dashboard
 
 2. Create and activate a virtual environment:
 ```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+python -m venv sm_venv
+source sm_venv/Scripts/activate  # On Windows: sm_venv\Scripts\activate
 ```
 
 3. Install required packages:
