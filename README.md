@@ -34,6 +34,8 @@ source sm_venv/Scripts/activate  # On Windows: sm_venv\Scripts\activate
 3. Install required packages:
 ```bash
 pip install -r requirements.txt
+pip install --upgrade pip setuptools wheel
+pip install pywinpty
 ```
 
 4. Create a `.env` file in the project root and add your Polygon.io API key:
@@ -45,19 +47,33 @@ POLYGON_API_KEY=your_api_key_here
 ## Project Structure
 
 ```
-stock-index-dashboard/
+
+your-folder-on-desktop/
 ├── market_env/
+│   ├── data/
+│   │   ├── csv/
+│   │   │   ├── index_composition.csv
+│   │   │   └── index_performance.csv
+│   │   └── backup_csv_for_db/
 │   ├── db/
 │   │   └── stock_data.db
-│   └── data/
-│       └── csv/
-├── src/
-│   ├── save_db.py
-│   ├── fetch_data.py
-│   ├── index_construction.py
-│   └── dashboard.py
-├── requirements.txt
+│   ├── docs/
+│   │   ├── requirements.txt
+│   │   └── software.txt
+│   ├── Include/
+│   ├── Lib/
+│   ├── screenshots/
+│   ├── scripts/
+│   ├── src/
+│   │   ├── export_data.py
+│   │   ├── fetch_data.py
+│   │   ├── index_construction.py
+│   │   ├── save_db.py
+│   │   ├── stock_index_dashboard.py
+│   │   └── .env
+│   └── pyvenv.cfg/
 └── README.md
+
 ```
 
 ## Usage
