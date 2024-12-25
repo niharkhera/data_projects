@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 from typing import Optional
 
 # Import IndexConstructor from your existing script
-from save_db import StockDataManager
+from save_db import *
 from index_construction import IndexConstructor
 
 class StockIndexDashboard:
@@ -24,12 +24,14 @@ class StockIndexDashboard:
             format='%(asctime)s - %(levelname)s: %(message)s'
         )
         self.logger = logging.getLogger(__name__)
-        
+
+        db_path = db_path or DB_PATH
+
         # Create index constructor
         self.index_constructor = IndexConstructor(db_path)
         
         # Optional: Add additional initialization logging
-        self.logger.info(f"StockIndexDashboard initialized with database: {db_path}")
+        self.logger.info(f"INFO: StockIndexDashboard initialized with database: {db_path}")
     
     def render_performance_chart(self, start_date: str = None, end_date: str = None):
         """
@@ -48,8 +50,11 @@ class StockIndexDashboard:
             end_date = datetime.now().strftime('%Y-%m-%d')
         
         try:
-            # Retrieve performance data using index constructor
+            self.logger.info(f"INFO: Rendering index performance between {start_date} to {end_date} ")
+            # Create index performance using function
             performance_data = self.index_constructor.track_index_performance(start_date, end_date)
+            # print(performance_data)
+
             
             if not performance_data.empty:
                 performance_data['date'] = pd.to_datetime(performance_data['date'])
@@ -73,7 +78,7 @@ class StockIndexDashboard:
                 st.warning("No performance data available")
         
         except Exception as e:
-            self.logger.error(f"Error rendering performance chart: {e}")
+            self.logger.error(f"ERROR: Error rendering performance chart: {e}")
             st.error("Failed to load performance chart")
     
     def render_index_composition(self, date: str = None, top_n: int = 100):
@@ -86,13 +91,17 @@ class StockIndexDashboard:
         """
         st.subheader('Index Composition')
         
-        # Use current date if not provided
+        # Use yesterday's date if not provided
         if date is None:
-            date = datetime.now().strftime('%Y-%m-%d')
+            date =  (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
         
         try:
-            # Retrieve index composition
-            composition_df = self.index_constructor.construct_equal_weighted_index(date, top_n)
+            self.logger.info(f"INFO: Rendering index composition data for {date} ")
+            # Retrieve index composition from database
+            composition_df = self.index_constructor.db_manager.display_index_composition(date)
+            # Create index composition using function
+            if composition_df.empty or composition_df is None: 
+                composition_df = self.index_constructor.construct_equal_weighted_index(date, top_n)
             
             if not composition_df.empty:
                 # Bar chart of stock weights
@@ -113,10 +122,10 @@ class StockIndexDashboard:
                 col1.metric("Total Stocks", len(composition_df))
                 col2.metric("Average Stock Price", f"${composition_df['close_price'].mean():.2f}")
             else:
-                st.warning(f"No composition data available for {date}")
+                st.warning(f"No index composition data available for {date}")
         
         except Exception as e:
-            self.logger.error(f"Error rendering composition: {e}")
+            self.logger.error(f"ERROR: Error rendering composition: {e}")
             st.error("Failed to load index composition")
     
     def render_index_changes(self, start_date: str = None, end_date: str = None):
@@ -146,7 +155,7 @@ class StockIndexDashboard:
                 st.info("No significant composition changes detected")
         
         except Exception as e:
-            self.logger.error(f"Error rendering composition changes: {e}")
+            self.logger.error(f"ERROR: Error rendering composition changes: {e}")
             st.error("Failed to load composition changes")
     
     def run(self):
@@ -180,19 +189,19 @@ class StockIndexDashboard:
             )
             composition_date_str = composition_date.strftime('%Y-%m-%d')
             
-            # Index Composition
+            # # Index Composition
             self.render_index_composition(composition_date_str)
             
-            # Composition Changes
+            # # Composition Changes
             self.render_index_changes(start_date_str, end_date_str)
         
         except Exception as e:
-            self.logger.error(f"Dashboard runtime error: {e}")
+            self.logger.error(f"ERROR: Dashboard runtime error: {e}")
             st.error("An error occurred while running the dashboard")
         
         finally:
             # Ensure connection is closed
-            self.index_constructor.close()
+            self.index_constructor.close_db_connection()
 
 def main():
     dashboard = StockIndexDashboard()
@@ -200,3 +209,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
