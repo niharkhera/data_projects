@@ -3,7 +3,7 @@ import os
 import logging
 import pandas as pd
 import time
-from datetime import datetime 
+from datetime import datetime, timedelta
 from typing import List, Dict, Optional
 
 
@@ -97,14 +97,15 @@ class StockDataManager:
         #Index Composition Table
         self.cursor.execute('''
         CREATE TABLE IF NOT EXISTS index_composition (
-            id INTEGER AUTO INCREMENT,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            date TEXT NOT NULL,
             ticker TEXT NOT NULL,
             close_price REAL NOT NULL, 
             weight REAL NOT NULL,
-            date TEXT NOT NULL,
+            market_cap REAL,
             update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id, date, ticker, update_time)
-        ) 
+            UNIQUE (date, ticker, update_time)
+            )
         ''')
 
         #Index Performance Table
@@ -123,6 +124,7 @@ class StockDataManager:
         CREATE TABLE IF NOT EXISTS index_composition_changes  (
             date TEXT NOT NULL,
             symbols TEXT NOT NULL,
+            prev_date TEXT,    
             prev_symbols TEXT,
             update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (date, update_time)
@@ -188,11 +190,28 @@ class StockDataManager:
             ''', details)
             
             self.conn.commit()
-            self.logger.info(f"Inserted details for {details['ticker']}")
+            self.logger.info(f"INFO: Inserted details for {details['ticker']}")
         
         except sqlite3.Error as e:
-            self.logger.error(f"Error inserting ticker details: {e}")
+            self.logger.error(f"ERROR: Error inserting ticker details: {e}")
             self.conn.rollback()
+
+    def display_ticker_details(self, limit: int = 10) -> pd.DataFrame:
+        """
+        Display ticker details with optional limit.
+        
+        Args:
+            limit (int): Number of records to display
+        
+        Returns:
+            pandas.DataFrame: DataFrame with ticker details
+        """
+        try:
+            query = f"SELECT * FROM ticker_details LIMIT {limit}"
+            return pd.read_sql_query(query, self.conn)
+        except Exception as e:
+            self.logger.error(f"ERROR: Error displaying ticker details: {e}")
+            return pd.DataFrame()
     
     def insert_stock_prices(self, stock_prices: List[Dict]):
         """
@@ -232,28 +251,11 @@ class StockDataManager:
             ''', price_data)
             
             self.conn.commit()
-            self.logger.info(f"Inserted {len(price_data)} stock price records")
+            self.logger.info(f"INFO: Inserted {len(price_data)} stock price records")
         
         except sqlite3.Error as e:
-            self.logger.error(f"Error inserting stock prices: {e}")
+            self.logger.error(f"ERROR: Error inserting stock prices: {e}")
             self.conn.rollback()
-
-    def display_ticker_details(self, limit: int = 10) -> pd.DataFrame:
-        """
-        Display ticker details with optional limit.
-        
-        Args:
-            limit (int): Number of records to display
-        
-        Returns:
-            pandas.DataFrame: DataFrame with ticker details
-        """
-        try:
-            query = f"SELECT * FROM ticker_details LIMIT {limit}"
-            return pd.read_sql_query(query, self.conn)
-        except Exception as e:
-            self.logger.error(f"Error displaying ticker details: {e}")
-            return pd.DataFrame()
     
     def display_stock_prices(self, limit: int = 10) -> pd.DataFrame:
         """
@@ -269,7 +271,7 @@ class StockDataManager:
             query = f"SELECT * FROM stock_prices LIMIT {limit}"
             return pd.read_sql_query(query, self.conn)
         except Exception as e:
-            self.logger.error(f"Error displaying stock prices: {e}")
+            self.logger.error(f"ERROR: Error displaying stock prices: {e}")
             return pd.DataFrame()
 
     def insert_or_update_index_composition(self, data):
@@ -282,16 +284,58 @@ class StockDataManager:
 
         try: 
             query = '''
-            INSERT OR REPLACE INTO index_composition (ticker, close_price, weight, date)
-            VALUES (?, ?, ?, ?)
+            INSERT OR REPLACE INTO index_composition (date, ticker, close_price, weight, market_cap)
+            VALUES (?, ?, ?, ?, ?)
             '''
             self.conn.executemany(query, data)
+            inserted_count = len(data)
             self.conn.commit()
-            self.logger.info(f"Inserted index composition records for date")
+            self.logger.info(f"INFO: Inserted {inserted_count} index composition records")
 
         except sqlite3.Error as e:
-            self.logger.error(f"Error inserting index composition records: {e}")
+            self.logger.error(f"ERROR: Error inserting index composition records: {e}")
             self.conn.rollback()
+
+    def display_index_composition(self, date=None):
+        """
+        Display all records from the index composition table for a given date.
+
+        Args:
+            date (str, optional): Date in 'YYYY-MM-DD' format. Defaults to the current date.
+
+        Returns:
+            pandas.DataFrame: The result of the query as a DataFrame.
+        """
+        try : 
+            if date is None:
+                date = datetime.now().strftime('%Y-%m-%d')
+
+            query = """
+            WITH latest_index_composition as (
+            SELECT ic.date, 
+            ic.ticker, 
+            ic.close_price, 
+            ic.weight, 
+            ic.market_cap, 
+            max(ic.update_time) as latest_update_time
+            FROM index_composition ic
+            GROUP BY ic.date, ic.ticker, ic.close_price, ic.weight, ic.market_cap)
+            SELECT *
+            FROM latest_index_composition
+            WHERE date = ?
+            ORDER BY market_cap DESC
+            """
+            df = pd.read_sql_query(query, self.conn, params=(date,))
+            if df.empty == False:
+                self.logger.info(f"INFO: Successfully displayed index composition data")
+                return df
+            else: 
+                self.logger.warning(f"WARN: No index composition data found for {date}")
+                return pd.DataFrame()
+
+        except Exception as e:
+            self.logger.error(f"ERROR: Error displaying stock prices: {e}")
+            return pd.DataFrame()
 
 
     def insert_or_update_index_performance(self, data):
@@ -307,12 +351,59 @@ class StockDataManager:
             VALUES (?, ?, ?)
             """
             self.conn.executemany(query, data)
+            inserted_count = len(data)
             self.conn.commit()
-            self.logger.info(f"Inserted index performance records")
+            self.logger.info(f"INFO: Inserted {inserted_count} index performance records")
 
         except sqlite3.Error as e:
-            self.logger.error(f"Error inserting index performance records: {e}")
+            self.logger.error(f"ERROR: Error inserting index performance records: {e}")
             self.conn.rollback()
+
+    def display_index_performance(self, start_date=None, end_date=None):
+        """
+        Display all records from the index performance table between start date to end date.
+
+        Args:
+            start_date (str, optional): Start date of performance tracking
+            end_date (str, optional): End date of performance tracking
+
+        Returns:
+            pandas.DataFrame: Index performance metrics
+        """
+
+        try : 
+            if start_date is None:
+                start_date = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
+
+            if end_date is None:
+                end_date = datetime.now().strftime('%Y-%m-%d')
+
+            query = """
+                WITH latest_index_performance as (SELECT date,
+                index_price,
+                daily_return,
+                max(update_time) as latest_update_time
+                FROM index_performance
+                GROUP BY date, index_price)
+
+                SELECT
+                * 
+                FROM latest_index_performance
+                WHERE date BETWEEN ? and ? 
+            """
+            df = pd.read_sql_query(query, self.conn, params=(start_date, end_date,))
+            df['daily_return'] = df['index_price'].pct_change() * 100
+
+            if df.empty == False:
+                self.logger.info(f"INFO: Successfully displayed index perfomance data")
+                return df
+            else: 
+                self.logger.warning(f"WARN: No index performance data found between {start_date} to {end_date}")
+                return pd.DataFrame()
+
+        except Exception as e:
+            self.logger.error(f"ERROR: Error displaying index perfomance: {e}")
+            return pd.DataFrame()
         
     def insert_or_update_index_composition_changes(self, data):
         """
@@ -324,34 +415,20 @@ class StockDataManager:
         try:
             # SQL query to insert or update index composition changes
             query = """
-            INSERT INTO index_composition_changes (date, symbols, prev_symbols)
-            VALUES (?, ?, ?)
+            INSERT INTO index_composition_changes (date, symbols, prev_date, prev_symbols)
+            VALUES (?, ?, ?, ?)
             """
             
             # Execute the batch insert operation
             self.conn.executemany(query, data)
+            inserted_count = len(data)
             self.conn.commit()
-            self.logger.info(f"Inserted index composition change records.")
+            self.logger.info(f"INFO: Inserted {inserted_count} index composition change records.")
 
         except sqlite3.Error as e:
             self.conn.rollback()
-            self.logger.error(f"Error inserting index composition change records: {e}")
+            self.logger.error(f"ERROR: Error inserting index composition change records: {e}")
 
-
-
-    def display_index_composition(self):
-        """
-        Display all records from the index_composition table.
-        """
-        query = "SELECT * FROM index_composition;"
-        return pd.read_sql_query(query, self.conn)
-
-    def display_index_performance(self):
-        """
-        Fetches all records from the index_performance table.
-        """
-        query = "SELECT * FROM index_performance;"
-        return pd.read_sql_query(query, self.conn)
 
 
     def execute_query(self, query: str, params: Optional[tuple] = None) -> pd.DataFrame:
@@ -374,7 +451,7 @@ class StockDataManager:
             return pd.read_sql_query(query, self.conn, params=params)
         
         except sqlite3.Error as e:
-            self.logger.error(f"Error executing query: {e}")
+            self.logger.error(f"ERROR: Error executing query: {e}")
             return pd.DataFrame()
 
     
@@ -383,4 +460,4 @@ class StockDataManager:
         Close database connection.
         """
         self.conn.close()
-        self.logger.info("Database connection closed")
+        self.logger.info("INFO: Database connection closed")
