@@ -1,0 +1,25 @@
+# legacy_code/.gitignore
+# This sub-project is a historical archive of the Windows 7 / Python 3.6 codebase.
+# We keep the source code (src/) and docs but ignore all runtime artifacts.
+
+# Windows Python venv runtime (already covered by root, belt-and-suspenders)
+Lib/
+Scripts/
+pyvenv.cfg
+Include/
+
+# Windows binaries
+*.dll
+*.exe
+*.pyd
+*.msi
+
+# Data files - keep structure, not content
+data/*.db
+data/csv/*.csv
+data/backup_files_for_db/*.csv
+!data/csv/.gitkeep
+!data/backup_files_for_db/.gitkeep
+
+db/*.db
+db/*.sqbpro

@@ -1,0 +1,89 @@
+# ╔══════════════════════════════════════════════════════╗
+# ║  data_projects — root .gitignore                     ║
+# ║  Covers all sub-projects in this repo                ║
+# ╚══════════════════════════════════════════════════════╝
+
+# ── Python bytecode ─────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyc
+*.pyo
+*.pyd
+
+# ── Virtual environments ─────────────────────────────────
+venv/
+env/
+.venv/
+ENV/
+market_env/
+sm_venv/
+legacy_code/Lib/
+legacy_code/Scripts/
+legacy_code/pyvenv.cfg
+
+# ── Secrets — NEVER commit these ────────────────────────
+.env
+.env.*
+!.env.example
+
+# ── Database files ───────────────────────────────────────
+*.db
+*.sqlite
+*.sqlite3
+*.sqbpro
+
+# ── Log files ────────────────────────────────────────────
+*.log
+logs/
+src/logs/
+
+# ── Data exports (keep folder via .gitkeep) ─────────────
+data/csv/*.csv
+data/backup_files_for_db/*.csv
+legacy_code/data/backup_files_for_db/*.csv
+legacy_code/data/csv/*.csv
+!data/csv/.gitkeep
+!data/backup_files_for_db/.gitkeep
+
+# ── macOS ─────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+
+# ── Windows (legacy_code from Windows 7) ────────────────
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ── Windows binaries from legacy Python venv ────────────
+*.dll
+*.exe
+*.msi
+
+# ── IDEs ─────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ── Jupyter ──────────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb
+
+# ── Docker ───────────────────────────────────────────────
+.docker/
+
+# ── Conda ─────────────────────────────────────────────────
+.conda/
+
+# ── Build artifacts ──────────────────────────────────────
+build/
+dist/
+*.egg-info/
+.eggs/
