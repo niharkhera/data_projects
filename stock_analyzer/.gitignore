@@ -1,0 +1,19 @@
+# Environments
+.venv/
+env/
+venv/
+
+# Secrets (CRITICAL: Do not commit API keys!)
+.env
+
+# Python Cache
+__pycache__/
+*.pyc
+
+# OS generated files
+.DS_Store
+
+# Data & DBs (Uncomment if you want to keep DBs local-only)
+# *.db
+# *.sqlite3
+# *.csv

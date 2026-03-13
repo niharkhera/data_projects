@@ -83,7 +83,7 @@ class StockIndexDashboard:
             st.set_page_config(page_title="Stock Index Dashboard", layout="wide")
             st.title('📈 Modern Stock Index Dashboard')
             
-            tab_dash, tab_fetch, tab_build = st.tabs(["📊 View Dashboard", "⬇️ Fetch Market Data", "🏗️ Build Index"])
+            tab_dash, tab_fetch, tab_build = st.tabs(["📊 View Dashboard", "⬇️ Fetch Market Data", "🏗️ Select Index Strategy"])
             
             with tab_fetch:
                 st.header("1. Fetch Company Profiles")
@@ -151,7 +151,7 @@ class StockIndexDashboard:
                     fetcher.close_db_connection()
 
             with tab_build:
-                st.header("Build Index Weights")
+                st.header("Select Index Strategy")
                 st.markdown("Select a date range to generate the index for.")
                 strategy = st.radio("Select Strategy:", ["Market-Cap Weighted", "Equal Weighted"])
                 
