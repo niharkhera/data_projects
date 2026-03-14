@@ -1,5 +1,8 @@
-pandas>=2.0.0
-requests>=2.31.0
+requests==2.31.0
+pandas==2.2.0
+python-dotenv==1.0.1
+tenacity==8.2.3
+apscheduler==3.10.4
+psycopg[binary]
 streamlit>=1.30.0
 plotly>=5.18.0
-python-dotenv>=1.0.0

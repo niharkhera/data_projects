@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: stock_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-sudouser}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-sudopass}
+      POSTGRES_DB: ${POSTGRES_DB:-stock_data}
+    ports:
+      - "5432:5432"
+    volumes:
+      # Persists database data even if the container is destroyed
+      - postgres_data:/var/lib/postgresql/data
+      # Mounts your schema file to initialize tables automatically
+      - ./data/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-sudouser} -d ${POSTGRES_DB:-stock_data}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
